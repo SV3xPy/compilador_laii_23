@@ -3,7 +3,7 @@
  */
 
 package com.mycompany.v1;
-
+import interfaz.NewJFrame;
 /**
  *
  * @author COMPUTOCKS
