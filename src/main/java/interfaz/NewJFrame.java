@@ -16,6 +16,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import analizador.l.lexico_alfabeto;
+import analizador.l.lexico_lexema;
+import analizador.l.lexico_tokens;
+import static java.awt.Color.green;
+import static java.awt.Color.red;
+
+
+
+
 import java.io.OutputStreamWriter;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -29,15 +38,63 @@ import javax.swing.text.Document;
  *
  * @author COMPUTOCKS
  */
+
 public class NewJFrame extends JFrame implements ActionListener {
 
     private File openedFile;
+
+    
+
 
     /**
      * Creates new form NewJFrame
      */
     public NewJFrame() {
         initComponents();
+        
+         btnCompilar.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+             // Se obtiene lo escrito
+    String codigo = editorCodigo.getText();
+
+    // Se inicializa la instancia de la clase para el análisis léxico
+    lexico_tokens token = new lexico_tokens();
+    lexico_alfabeto alfabeto = new lexico_alfabeto();
+
+    // Realizar análisis léxico
+    String[] lineas = codigo.split("\n");
+    boolean bandAlf = true;
+
+    for (int li = 0; lineas.length > li && bandAlf; li++) {
+        if (!alfabeto.validar(lineas[li])) {
+            bandAlf = false;
+            lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
+            lblLestado.setForeground(red);
+        lblLestado.setText("O");
+            break;
+        }
+
+        String[] lexemas = token.getListTokens(lineas[li]);
+
+        for (String lexema : lexemas) {
+            String resultadoToken = token.getToken(lexema);
+            // Puedes agregar lógica adicional para manejar el resultado del token aquí
+            System.out.println(resultadoToken);
+        }
+    }
+
+    // Si no hay errores de alfabeto, mostrar mensaje de éxito
+    if (bandAlf) {
+        lblSalida.setText("Análisis léxico exitoso");
+        lblLestado.setForeground(green);
+        lblLestado.setText("O");
+    }
+             
+        }
+         });
+        
+        
     }
 
     /**
@@ -52,7 +109,7 @@ public class NewJFrame extends JFrame implements ActionListener {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        lblSalida = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         editorCodigo = new javax.swing.JTextPane();
         jLabel1 = new javax.swing.JLabel();
@@ -61,6 +118,9 @@ public class NewJFrame extends JFrame implements ActionListener {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         mostrarRuta = new javax.swing.JTextField();
+        btnCompilar = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        lblLestado = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Abrir = new javax.swing.JMenuItem();
@@ -98,9 +158,9 @@ public class NewJFrame extends JFrame implements ActionListener {
 
         jScrollPane2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
+        lblSalida.setBackground(new java.awt.Color(255, 255, 255));
+        lblSalida.setForeground(new java.awt.Color(21, 50, 67));
+        jScrollPane2.setViewportView(lblSalida);
 
         jScrollPane3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jScrollPane3.setViewportView(editorCodigo);
@@ -121,6 +181,14 @@ public class NewJFrame extends JFrame implements ActionListener {
         jLabel5.setText("Código fuente:");
 
         mostrarRuta.setEditable(false);
+
+        btnCompilar.setBackground(new java.awt.Color(40, 75, 99));
+        btnCompilar.setForeground(new java.awt.Color(244, 249, 233));
+        btnCompilar.setText("Compilar");
+
+        jLabel6.setText("LÉXICO ESTADO: ");
+
+        lblLestado.setBackground(new java.awt.Color(102, 102, 102));
 
         jMenuBar1.setBackground(new java.awt.Color(180, 184, 171));
 
@@ -229,12 +297,19 @@ public class NewJFrame extends JFrame implements ActionListener {
                             .addComponent(mostrarRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(56, 56, 56)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblLestado, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 577, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52)
+                                .addComponent(btnCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -251,29 +326,37 @@ public class NewJFrame extends JFrame implements ActionListener {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(lblLestado, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel2))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mostrarRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4))
-                .addGap(6, 6, 6)
+                        .addComponent(mostrarRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCompilar)
+                            .addComponent(jLabel4))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(300, 300, 300)
+                        .addGap(294, 294, 294)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(45, 45, 45))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(101, 101, 101)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(197, Short.MAX_VALUE)))
+                    .addContainerGap(203, Short.MAX_VALUE)))
         );
 
         pack();
@@ -437,6 +520,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JMenuItem Abrir;
     private javax.swing.JMenu Ayuda;
     private javax.swing.JMenuItem Guardar;
+    private javax.swing.JButton btnCompilar;
     private javax.swing.JMenuItem docALex;
     private javax.swing.JMenuItem docASem;
     private javax.swing.JMenuItem docASin;
@@ -448,6 +532,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
@@ -455,7 +540,8 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel lblLestado;
+    private javax.swing.JLabel lblSalida;
     private javax.swing.JMenuItem limpiarConsola;
     private javax.swing.JMenuItem limpiarEditorCodigo;
     private javax.swing.JMenuItem limpiarTablaSimbolos;
