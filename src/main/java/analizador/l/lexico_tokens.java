@@ -89,13 +89,13 @@ public class lexico_tokens {
 
     String buscarToken(String lexema){
         AutCadenas = new cadena(lexema);
-        if(AutCadenas.start())
+        if(AutCadenas.inicio())
             return "CADENA,70,Tipo de dato Cadena,"+lexema;
         AutNumeros = new numero(lexema);
-        if(AutNumeros.start())
+        if(AutNumeros.inicio())
             return "NUMERO,71,Tipo de dato Numero,"+lexema;
         AutBooleana = new booleano(lexema);
-        if(AutBooleana.start())
+        if(AutBooleana.inicio())
             return "TDBOOLEANO,72,Tipo de dato booleano,"+lexema;
         return null;
     }
