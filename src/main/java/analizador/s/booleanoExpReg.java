@@ -12,19 +12,20 @@ import java.util.ArrayList;
  *
  * @author Cristhian
  */
-public class errorBooleano {
-    tablaSimbolos tblSmb;
-    simbolos smb;
-    pilaErrores plErr;
-    cadena cdna;
-    numero num;
-    String s;
-    int linea;
-    int inicioIndex = 0;
-    int finIndex = 0;
-    boolean estado = false;
+public class booleanoExpReg {
+    tablaSimbolos tblSmb;     //Crea una tabla de símbolos
+    simbolos smb;             //Representa un símbolo
+    pilaErrores plErr;        //Crea una pila de errores
+    cadena cdna;              //Cadena de caracteres
+    numero num;               //Representa un número
+    String s;                 //Cadena de texto
+    int linea;                //Almacena el número de línea
+    int inicioIndex = 0;      //Índice de inicio
+    int finIndex = 0;         //Índice de fin
+    boolean estado = false;   //Almacena un estado
     
-    public errorBooleano(tablaSimbolos tblSmb, String s, pilaErrores plErr, int linea)
+    //Constructor
+    public booleanoExpReg(tablaSimbolos tblSmb, String s, pilaErrores plErr, int linea)
     {
         this.tblSmb = tblSmb;
         this.s = s;
@@ -32,65 +33,70 @@ public class errorBooleano {
         this.linea = linea;
     }
     
+    
+    //Comienza recorrido del automáta
     public boolean inicio()
     {
         q0();
         return estado;
     }
     
+    //Estado inicial del autómata: 
     void q0()
     {
         finIndex = obtenerFinIndex(s);
         String aux = s.substring(inicioIndex, finIndex);
         inicioIndex = finIndex;
-        if(aux.equals("verdad") || aux.equals("falso") || esVarBool(aux))
+        if(aux.equals("verdad") || aux.equals("falso") || esVarBool(aux)) //Comprueba si la subcadena es igual a verdad, falso o una variable booleana
         {
-            q1();
+            q1(); //Se pasa al siguiente estado del autómata.
         }
         else
         {
             cdna = new cadena(aux);
             num = new numero(aux);
-            if(num.inicio() || cdna.inicio() || esVarEntero(aux) || esVarTexto(aux))
+            if(num.inicio() || cdna.inicio() || esVarEntero(aux) || esVarTexto(aux)) //Comprueba si la subcadena es un número válido, una cadena válida, una variable entera o de texto.
             {
-                q2();
+                q2(); //Cambia a otro estado del autómata
             }
             else
             {
                 estado = false;
-                plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: La expresión booleana está mal construida.", "104"));
+                plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: La expresión booleana está mal construida.", "104")); //Se arroja mensaje de error.
             }
         }
     }
     
+    //Estado uno del autómata
     void q1()
     {
         if(inicioIndex == s.length())
         {
-            qf();
+            qf(); //Se pasa al estado final del autómata
         }
         else
         {
-            if(esOpLog())
+            if(esOpLog()) //Comprueba si es un operador lógico
             {
-                q0();
+                q0(); //Regresa al estado inicial
             }
             else
             {
-                plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: Operador no reconocido.", "105"));
+                plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: Operador no reconocido.", "105")); //Se arroja mensaje de error
             }
         }
     }
     
+    //Estado dos del autómata
     void q2()
     {
-        if(esOpComp())
+        if(esOpComp()) //Comprueba si es un operador de comparación 
         {
-            q3();
+            q3(); //Pasa al estado tres del autómata
         }
         else
         {
-            plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: Operador no reconocido.", "105"));
+            plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: Operador no reconocido.", "105")); //Arroja mensaje de error.
         }
     }
     
@@ -101,28 +107,30 @@ public class errorBooleano {
         inicioIndex = finIndex;
         cdna = new cadena(aux);
         num = new numero(aux);
-        if(num.inicio() || cdna.inicio() || esVarEntero(aux) || esVarTexto(aux))
+        if(num.inicio() || cdna.inicio() || esVarEntero(aux) || esVarTexto(aux)) //Comprueba si la subcadena es un número válido, una cadena válida, una variable entera o de texto.
         {
-            q1();
+            q1(); //Pasa al estado uno del autómata
         }
         else
         {
-            plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: La expresión booleana está mal construida.", "106"));
+            plErr.push(new errores(String.valueOf(linea + 1), "Error de sintaxis: La expresión booleana está mal construida.", "106")); //Arroja mensaje de error
         }
     }
     
+    //Estado final del autómata
     void qf()
     {
         estado = true;
     }
     
+    //Encontrar el índice final de una subcadena en la cadena "s"
     int obtenerFinIndex(String s)
     {
         int i = inicioIndex;
         boolean b = false;
         for(; s.length() > i && !b; i++)
         {
-            if(esFinalIndex(s.charAt(i)))
+            if(esFinalIndex(s.charAt(i))) //Comprueba si el carácter en la posición "i" de la cadena "s" es un carácter que indica el final de la subcadena.
             {
                 i--;
                 b = true;
@@ -132,6 +140,7 @@ public class errorBooleano {
         return i;
     }
     
+    //Verifica si un carácter es uno que indican el final de la subcadena.
     boolean esFinalIndex(char c)
     {
         if(c == '<' || c == '>' || c == '=' || c == '&' || c == '|' || c == '¬')
@@ -144,8 +153,8 @@ public class errorBooleano {
     boolean esVarBool(String s)
     {
         for (int i = 0; this.tblSmb.tamanio() > i; i++) {
-            simbolos Simbolo = tblSmb.obtenerSimbolo(i);
-            if (Simbolo.obtenerToken().equals("VARBOOLEANO") && Simbolo.obtenerDesc().equals(s))
+            simbolos Simbolo = tblSmb.obtenerSimbolo(i); //Obtiene el símbolo en la posición "i" de la tabla de símbolos y lo asigna a la variable "Simbolo".
+            if (Simbolo.obtenerToken().equals("VARBOOLEANO") && Simbolo.obtenerDesc().equals(s)) //Comprueba si el token del símbolo es igual a "VARBOOLEANO" y la descripción del símbolo es igual a la cadena "s"
                 return true;
         }
         return false;
@@ -154,7 +163,7 @@ public class errorBooleano {
     boolean esVarEntero(String s)
     {
         for (int i = 0; this.tblSmb.tamanio() > i; i++) {
-            simbolos Simbolo = tblSmb.obtenerSimbolo(i);
+            simbolos Simbolo = tblSmb.obtenerSimbolo(i); 
             if (Simbolo.obtenerToken().equals("VARENTERO") && Simbolo.obtenerDesc().equals(s))
                 return true;
         }
@@ -171,18 +180,25 @@ public class errorBooleano {
         return false;
     }
     
+    //Verifica si la subcadena corresponde a un operador lógico
     boolean esOpLog()
     {
         try {
             String opLog = s.substring(inicioIndex, inicioIndex + 2);
             System.out.println("ope" + opLog);
-            if (opLog.equals("&") || opLog.equals("|") || opLog.equals("==")) 
+            if (opLog.equals("==")) 
             {
                 inicioIndex += 2;
                 return true;
             }
             else
             {
+                opLog = s.substring(inicioIndex, inicioIndex + 1);
+                if (opLog.equals("&") || opLog.equals("|")) 
+                {
+                    inicioIndex += 1;
+                    return true;
+                }
                 return false;
             }
         } 
@@ -192,6 +208,7 @@ public class errorBooleano {
         }
     }
     
+    //Verifica si la subcadena corresponde a un operador de comparación
     boolean esOpComp()
     {
         try 
@@ -222,6 +239,7 @@ public class errorBooleano {
         }
     }
     
+    //Valida la expresión booleana
     public Boolean validarExpBool(String exp)
     {
         ArrayList <String> expresion = new ArrayList <String> ();
@@ -262,6 +280,7 @@ public class errorBooleano {
         return evaluarExpBool(expresion);
     }
     
+    //Recorre la lista de elementos de la expresión booleana y realiza las operaciones de comparación y lógicas correspondientes
     boolean evaluarExpBool(ArrayList <String> expresion)
     {
         ArrayList <String> aux = new ArrayList <String> ();
@@ -276,12 +295,10 @@ public class errorBooleano {
             {
                 if(validarExpComp(expresion.get(i-1), expresion.get(i+1)))
                 {
-                    System.out.println("ExpAri Valida");
                     aux.add(obtenerExpComp(expresion.get(i-1), expresion.get(i), expresion.get(i+1))+"");
                 }
                 else
                 {
-                    System.out.println("ERROR SEMANTICOOOO 1");
                     plErr.push(new errores(String.valueOf(linea + 1),"Error semántico: Revisar expresión de comparación." , "302"));
                 }
             // Expresiones logicas
@@ -303,14 +320,11 @@ public class errorBooleano {
                 }
             }
         }
-        System.out.println("exxx "+expresion);
-        System.out.println("auxx "+aux);
         // Expresiones logicas
         while(aux.size() > 1)
         {
             if(validarExpLog(aux.get(0), aux.get(1), aux.get(2)))
             {
-                System.out.println("ITERACION");
                 aux.set(2, obtenerExpLog(aux.get(0), aux.get(1), aux.get(2))+"");
                 aux.remove(0);
                 aux.remove(0);
@@ -327,10 +341,12 @@ public class errorBooleano {
         }
     }
     
+    //Valida una expresión de comparación entre dos variables. Aquí está la explicación del código
     boolean validarExpComp(String varIzq, String varDer)
     {
+        //Si ambos tokens son "VARENTERO", significa que ambas variables son de tipo entero y la expresión de comparación es válida.
         if(tblSmb.obtenerTokenSimbolo(varIzq).obtenerToken().equals("VARENTERO") &&
-           tblSmb.obtenerTokenSimbolo(varDer).obtenerToken().equals("VARENTERO"))
+           tblSmb.obtenerTokenSimbolo(varDer).obtenerToken().equals("VARENTERO")) 
         {
             return true;
         }
@@ -340,9 +356,9 @@ public class errorBooleano {
         }
     }
     
+    //Obtiene el resultado de una expresión de comparación entre dos variables enteras. 
     boolean obtenerExpComp(String varIzq, String simbolo, String varDer)
-    {
-        //System.out.println("bueeeee");        
+    {        
         int vIzq = Integer.parseInt(tblSmb.obtenerTokenSimbolo(varIzq).obtenerValor());
         int vDer = Integer.parseInt(tblSmb.obtenerTokenSimbolo(varDer).obtenerValor());
         boolean res = false;
@@ -378,17 +394,17 @@ public class errorBooleano {
         return res;
     }
     
+    //Valida una expresión lógica entre dos variables booleanas.
     boolean validarExpLog(String varIzq, String simbolo, String varDer)
     {
+        //Verifica si ambas variables son booleanas
         if((varIzq.equals("true") || varIzq.equals("false") || tblSmb.obtenerTokenSimbolo(varIzq).obtenerToken().equals("VARBOOLEANO")) &&
            (varDer.equals("true") || varDer.equals("false") || tblSmb.obtenerTokenSimbolo(varDer).obtenerToken().equals("VARBOOLEANO")))
         {
-            System.out.println("Bien construida");
             return true;
         }
         else
         {
-            System.out.println("FFFFFFFFF");
             plErr.push(new errores(String.valueOf(linea + 1),"Error semántico: Revisar expresión lógica" , "309"));
             return false;
         }
@@ -421,22 +437,22 @@ public class errorBooleano {
             else
             {
                 plErr.push(new errores(String.valueOf(linea + 1),"Error semántico: Revizar expresión lógica (izq)" , "310"));
-                System.out.println("ERROR SEMANTICOOOoOo 2");
             }
         }
         else
         {
             plErr.push(new errores(String.valueOf(linea + 1),"Error semántic: Revisar expresión lógica (izq)" , "311"));
-            System.out.println("ERROR SEMANTICOOOoOo 3");
         }
         // Clasificacion de lado derecho de la expresion
         if(varDer.equals("true"))
         {
             der = true;
-        }else if(varDer.equals("false"))
+        }
+        else if(varDer.equals("false"))
         {
             der = false;
-        }else if(tblSmb.obtenerTokenSimbolo(varDer).obtenerToken().equals("VARBOOLEANO"))
+        }
+        else if(tblSmb.obtenerTokenSimbolo(varDer).obtenerToken().equals("VARBOOLEANO"))
         {
             String aux = tblSmb.obtenerTokenSimbolo(varDer).obtenerValor();
             if(aux.equals("verdad"))
@@ -450,13 +466,11 @@ public class errorBooleano {
             else
             {
                 plErr.push(new errores(String.valueOf(linea + 1),"Error semántico: Revisar expresión lógica (der)" , "312"));
-                System.out.println("ERROR SEMANTICOOOoOo 4");
             }
         }
         else
         {
             plErr.push(new errores(String.valueOf(linea + 1),"Error semántico: Revisar expresión lógica (der)" , "313"));
-                System.out.println("ERROR SEMANTICOOOoOo 5");
         }
         // Clasificacion de simbolos de comparacion
         if(simbolo.equals("&"))
@@ -482,7 +496,6 @@ public class errorBooleano {
             }
         }else{
             plErr.push(new errores(String.valueOf(linea + 1),"Error sintáctico: Revisar estructura de la expresion logica" , "314"));
-            System.out.println("ERROR SINTACTICOOOO 6");
             return false;
         }
     }

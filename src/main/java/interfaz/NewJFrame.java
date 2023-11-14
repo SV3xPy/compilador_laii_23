@@ -22,9 +22,6 @@ import analizador.l.lexico_tokens;
 import static java.awt.Color.green;
 import static java.awt.Color.red;
 
-
-
-
 import java.io.OutputStreamWriter;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -38,63 +35,58 @@ import javax.swing.text.Document;
  *
  * @author COMPUTOCKS
  */
-
 public class NewJFrame extends JFrame implements ActionListener {
 
     private File openedFile;
-
-    
-
 
     /**
      * Creates new form NewJFrame
      */
     public NewJFrame() {
         initComponents();
-        
-         btnCompilar.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-             // Se obtiene lo escrito
-    String codigo = editorCodigo.getText();
 
-    // Se inicializa la instancia de la clase para el análisis léxico
-    lexico_tokens token = new lexico_tokens();
-    lexico_alfabeto alfabeto = new lexico_alfabeto();
+        btnCompilar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Se obtiene lo escrito
+                String codigo = editorCodigo.getText();
 
-    // Realizar análisis léxico
-    String[] lineas = codigo.split("\n");
-    boolean bandAlf = true;
+                // Se inicializa la instancia de la clase para el análisis léxico
+                lexico_tokens token = new lexico_tokens();
+                lexico_alfabeto alfabeto = new lexico_alfabeto();
 
-    for (int li = 0; lineas.length > li && bandAlf; li++) {
-        if (!alfabeto.validar(lineas[li])) {
-            bandAlf = false;
-            lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
-            lblLestado.setForeground(red);
-        lblLestado.setText("O");
-            break;
-        }
+                // Realizar análisis léxico
+                String[] lineas = codigo.split("\n");
+                boolean bandAlf = true;
 
-        String[] lexemas = token.getListTokens(lineas[li]);
+                for (int li = 0; lineas.length > li && bandAlf; li++) {
+                    if (!alfabeto.validar(lineas[li])) {
+                        bandAlf = false;
+                        lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
+                        lblLestado.setForeground(red);
+                        lblLestado.setText("O");
+                        break;
+                    }
 
-        for (String lexema : lexemas) {
-            String resultadoToken = token.getToken(lexema);
-            // Puedes agregar lógica adicional para manejar el resultado del token aquí
-            System.out.println(resultadoToken);
-        }
-    }
+                    String[] lexemas = token.getListTokens(lineas[li]);
 
-    // Si no hay errores de alfabeto, mostrar mensaje de éxito
-    if (bandAlf) {
-        lblSalida.setText("Análisis léxico exitoso");
-        lblLestado.setForeground(green);
-        lblLestado.setText("O");
-    }
-             
-        }
-         });
-        
-        
+                    for (String lexema : lexemas) {
+                        String resultadoToken = token.getToken(lexema);
+                        // Puedes agregar lógica adicional para manejar el resultado del token aquí
+                        System.out.println(resultadoToken);
+                    }
+                }
+
+                // Si no hay errores de alfabeto, mostrar mensaje de éxito
+                if (bandAlf) {
+                    lblSalida.setText("Análisis léxico exitoso");
+                    lblLestado.setForeground(green);
+                    lblLestado.setText("O");
+                }
+
+            }
+        });
+
     }
 
     /**
