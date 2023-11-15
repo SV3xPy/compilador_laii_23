@@ -22,13 +22,21 @@ import analizador.l.lexico_tokens;
 import static java.awt.Color.green;
 import static java.awt.Color.red;
 
+import TablaSimbolos.simbolos;
+
+
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 
 /**
@@ -38,54 +46,70 @@ import javax.swing.text.Document;
 public class NewJFrame extends JFrame implements ActionListener {
 
     private File openedFile;
+    private Map<String, simbolos> tablaSimbolos = new HashMap<>();
 
     /**
      * Creates new form NewJFrame
      */
     public NewJFrame() {
         initComponents();
+        DefaultTableModel model = new DefaultTableModel();
+      tblTokens.setModel(model);
+
+       model.addColumn("ID");
+       model.addColumn("Tipo");
+       model.addColumn("Token");
+       model.addColumn("Descripción");
+       model.addColumn("Lexema");
 
         btnCompilar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Se obtiene lo escrito
-                String codigo = editorCodigo.getText();
+  @Override
+  public void actionPerformed(ActionEvent e) {
+      // Se obtiene lo escrito
+      String codigo = editorCodigo.getText();
 
-                // Se inicializa la instancia de la clase para el análisis léxico
-                lexico_tokens token = new lexico_tokens();
-                lexico_alfabeto alfabeto = new lexico_alfabeto();
+      // Se inicializa la instancia de la clase para el análisis léxico
+      lexico_tokens token = new lexico_tokens();
+      lexico_alfabeto alfabeto = new lexico_alfabeto();
 
-                // Realizar análisis léxico
-                String[] lineas = codigo.split("\n");
-                boolean bandAlf = true;
+      // Obtener el modelo de la tabla existente
 
-                for (int li = 0; lineas.length > li && bandAlf; li++) {
-                    if (!alfabeto.validar(lineas[li])) {
-                        bandAlf = false;
-                        lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
-                        lblLestado.setForeground(red);
-                        lblLestado.setText("O");
-                        break;
-                    }
 
-                    String[] lexemas = token.getListTokens(lineas[li]);
+      // Realizar análisis léxico
+      String[] lineas = codigo.split("\n");
+      boolean bandAlf = true;
 
-                    for (String lexema : lexemas) {
-                        String resultadoToken = token.getToken(lexema);
-                        // Puedes agregar lógica adicional para manejar el resultado del token aquí
-                        System.out.println(resultadoToken);
-                    }
-                }
+      for (int li = 0; lineas.length > li && bandAlf; li++) {
+          if (!alfabeto.validar(lineas[li])) {
+              bandAlf = false;
+              lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
+              lblLestado.setForeground(red);
+              lblLestado.setText("O");
+              break;
+          }
 
-                // Si no hay errores de alfabeto, mostrar mensaje de éxito
-                if (bandAlf) {
-                    lblSalida.setText("Análisis léxico exitoso");
-                    lblLestado.setForeground(green);
-                    lblLestado.setText("O");
-                }
+          String[] lexemas = token.getListTokens(lineas[li]);
 
-            }
-        });
+          for (String lexema : lexemas) {
+              String resultadoToken = token.getToken(lexema);
+              // Obtener la información del token
+              String[] info = resultadoToken.split(",");
+              // Agregar la información del token a la tabla
+              System.out.print(resultadoToken);
+              model.addRow(new Object[]{info[3], info[5], info[4], info[6], info[7]});
+          }
+      }
+
+      // Si no hay errores de alfabeto, mostrar mensaje de éxito
+      if (bandAlf) {
+          lblSalida.setText("Análisis léxico exitoso");
+          lblLestado.setForeground(green);
+          lblLestado.setText("O");
+      }
+  }
+});
+
+
 
     }
 
@@ -99,7 +123,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblTokens = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         lblSalida = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -135,7 +159,7 @@ public class NewJFrame extends JFrame implements ActionListener {
         jScrollPane1.setBackground(new java.awt.Color(238, 240, 235));
         jScrollPane1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTokens.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -146,7 +170,7 @@ public class NewJFrame extends JFrame implements ActionListener {
                 "ID", "No. Token", "Token", "Descripción", "Valor"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblTokens);
 
         jScrollPane2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
@@ -532,7 +556,6 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblLestado;
     private javax.swing.JLabel lblSalida;
     private javax.swing.JMenuItem limpiarConsola;
@@ -540,6 +563,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JMenuItem limpiarTablaSimbolos;
     private javax.swing.JMenuItem limpiarTodo;
     private javax.swing.JTextField mostrarRuta;
+    private javax.swing.JTable tblTokens;
     // End of variables declaration//GEN-END:variables
 
     @Override

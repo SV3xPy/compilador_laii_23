@@ -18,50 +18,55 @@ public class lexico_tokens {
     numero AutNumeros;
     booleano AutBooleana;
     lexico_lexema lex;
+    private int nextId = 1; // Inicializar el contador de ID
 
     public String getToken(String lexema){
+        String id = Integer.toString(nextId++); // Generar un ID único
+
         if(lexema.equals("if"))
-            return "IF,1,Palabra reservada,"+lexema;
+            return id + ",IF,1,Palabra reservada,"+lexema;
         if(lexema.equals("else"))
-            return "ELSE,2,Palabra reservada,"+lexema;    
+            return id + ",ELSE,2,Palabra reservada,"+lexema;    
         if(lexema.equals("aslong"))
-            return "ASLONG,3,Palabra reservada,"+lexema;    
+            return id + ",ASLONG,3,Palabra reservada,"+lexema;    
         if(lexema.equals("show"))
-            return "SHOW,4,Palabra reservada,"+lexema;    
+            return id + ",SHOW,4,Palabra reservada,"+lexema;    
         if(lexema.equals("int"))
-            return "INT,11,Palabra reservada,"+lexema;    
+            return id + ",INT,11,Palabra reservada,"+lexema;    
         if(lexema.equals("point"))
-            return "POINT,12,Palabra reservada,"+lexema;    
+            return id + ",POINT,12,Palabra reservada,"+lexema;   
+        if(lexema.equals("booleano"))
+            return id + ",BOOLEANO,22,Palabra reservada,"+lexema;    
         if(lexema.equals("text"))
-            return "TEXT,13,Palabra reservada,"+lexema;
+            return id + ",TEXT,13,Palabra reservada,"+lexema;
         if(esOpArtimetico(lexema))
-            return "OPARITMETICO,21,Operador aritmético,"+lexema;    
+            return id + ",OPARITMETICO,21,Operador aritmético,"+lexema;    
         if(esOpLogico(lexema))
-            return "OPLOGICO,31,Operador lógico,"+lexema;       
+            return id + ",OPLOGICO,31,Operador lógico,"+lexema;       
         if(esOpComparacion(lexema))
-            return "OPCOMPARACION,41,Operador de comparación,"+lexema;    
+            return id + ",OPCOMPARACION,41,Operador de comparación,"+lexema;    
         if(lexema.equals("="))
-            return "OPASIGNACION,51,Operador de asignación,"+lexema;    
+            return id + ",OPASIGNACION,51,Operador de asignación,"+lexema;    
         if(lexema.equals(";"))
-            return "DELIMITADOR,60,Delimitador,"+lexema;
+            return id + ",DELIMITADOR,60,Delimitador,"+lexema;
         if(lexema.equals("{"))
-            return "BLOQUEAPERTURA,61,Bloque apertura,"+lexema;
+            return id + ",BLOQUEAPERTURA,61,Bloque apertura,"+lexema;
         if(lexema.equals("}"))
-            return "BLOQUECIERRE,62,Bloque cierre,"+lexema;
+            return id + ",BLOQUECIERRE,62,Bloque cierre,"+lexema;
         if(lexema.equals("("))
-            return "PARENTESISAPERTURA,63,Paréntesis apertura,"+lexema;
+            return id + ",PARENTESISAPERTURA,63,Paréntesis apertura,"+lexema;
         if(lexema.equals(")"))
-            return "PARENTESISCIERRE,64,Paréntesis cierre,"+lexema;
+            return id + ",PARENTESISCIERRE,64,Paréntesis cierre,"+lexema;
         if(variables.contains(lexema))
-            return "VARIABLE,75,Variable,"+lexema;
+            return id + ",VARIABLE,75,Variable,"+lexema;
         if(lexema.equals("@@"))
-            return "COMENTARIO,80,Comentario de una línea,"+lexema;
+            return id + ",COMENTARIO,80,Comentario de una línea,"+lexema;
         if(lexema.equals("#@"))
-            return "COMENTARIOINICIO,81,Comentario de más de dos líneas inicio,"+lexema;
+            return id + ",COMENTARIOINICIO,81,Comentario de más de dos líneas inicio,"+lexema;
         if(lexema.equals("@#"))
-            return "COMENTARIOFIN,82,Comentario de más de dos líneas fin,"+lexema;
+            return id + ",COMENTARIOFIN,82,Comentario de más de dos líneas fin,"+lexema;
         if(lexema.equals("show"))
-            return "SHOW,100,Imprimir,"+lexema;
+            return id + ",SHOW,100,Imprimir,"+lexema;
         String buscToken = buscarToken(lexema);
         if(buscToken!=null)
             return buscToken;
@@ -101,12 +106,14 @@ public class lexico_tokens {
     }
 
     public String[] getListTokens(String linea){
-        lex = new lexico_lexema();
-        String[] lexemas = lex.getLexemas(linea);
-        String[] tokens = new String[lexemas.length];
-        for(int i=0;lexemas.length>i;i++){
-            tokens[i] = getToken(lexemas[i]);
-        }
-        return tokens;
+    lex = new lexico_lexema();
+    String[] lexemas = lex.getLexemas(linea);
+    String[] tokens = new String[lexemas.length];
+    for(int i=0;i<lexemas.length;i++){
+        System.out.println("Lexema: '" + lexemas[i] + "'");
+        tokens[i] = getToken(lexemas[i]);
     }
+    return tokens;
+}
+
 }
