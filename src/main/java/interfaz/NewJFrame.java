@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import analizador.l.lexico_alfabeto;
 import analizador.l.lexico_lexema;
+import PilaErrores.pilaErrores;
+import PilaErrores.errores;
 import analizador.l.lexico_tokens;
 import static java.awt.Color.green;
 import static java.awt.Color.red;
@@ -47,6 +49,8 @@ public class NewJFrame extends JFrame implements ActionListener {
 
     private File openedFile;
     private Map<String, simbolos> tablaSimbolos = new HashMap<>();
+    private pilaErrores PilaError;
+
 
     /**
      * Creates new form NewJFrame
@@ -55,6 +59,7 @@ public class NewJFrame extends JFrame implements ActionListener {
         initComponents();
         DefaultTableModel model = new DefaultTableModel();
       tblTokens.setModel(model);
+      
 
        model.addColumn("ID");
        model.addColumn("Tipo");
@@ -65,6 +70,7 @@ public class NewJFrame extends JFrame implements ActionListener {
         btnCompilar.addActionListener(new ActionListener() {
   @Override
   public void actionPerformed(ActionEvent e) {
+      PilaError = new pilaErrores();
       // Se obtiene lo escrito
       String codigo = editorCodigo.getText();
 
@@ -76,15 +82,21 @@ public class NewJFrame extends JFrame implements ActionListener {
 
 
       // Realizar análisis léxico
-      String[] lineas = codigo.split("\n");
+      // Realizar análisis léxico
+       String[] lineas = codigo.split("\\R");
+
+      
       boolean bandAlf = true;
 
       for (int li = 0; lineas.length > li && bandAlf; li++) {
           if (!alfabeto.validar(lineas[li])) {
               bandAlf = false;
-              lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
-              lblLestado.setForeground(red);
-              lblLestado.setText("O");
+              errores error = new errores(Integer.toString(li + 1), "Caracteres no permitidos", "E1");
+              PilaError.push(error);
+              
+             // lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
+              //lblLestado.setForeground(red);
+              //lblLestado.setText("O");
               break;
           }
 
@@ -94,9 +106,12 @@ public class NewJFrame extends JFrame implements ActionListener {
               String resultadoToken = token.getToken(lexema);
               // Obtener la información del token
               String[] info = resultadoToken.split(",");
-              // Agregar la información del token a la tabla
-              System.out.print(resultadoToken);
-              model.addRow(new Object[]{info[3], info[5], info[4], info[6], info[7]});
+              // Verificar si info tiene al menos 8 elementos
+              if (info.length >= 8) {
+                    // Agregar la información del token a la tabla
+                    System.out.print(resultadoToken);
+                    model.addRow(new Object[]{info[3], info[5], info[4], info[6], info[7]});
+               } 
           }
       }
 
@@ -106,6 +121,21 @@ public class NewJFrame extends JFrame implements ActionListener {
           lblLestado.setForeground(green);
           lblLestado.setText("O");
       }
+      // Aquí es donde se verifica la pila de errores
+        if(PilaError.estaVacia()){
+            // El programa se ejecutó sin errores
+        } else {
+            // Errores en tiempo de compilación
+            String text = "";
+          while(!PilaError.estaVacia()){
+              errores error = (errores) PilaError.pop();
+              String l = error.getLineaError();
+              String D = error.getDescError();
+              String C = error.getCodigoError();
+              text += "línea: " + l + " Descripción: " + D + " Código del error: " + C+ "\n";
+          }
+          lblSalida.setText(text);
+        }
   }
 });
 
