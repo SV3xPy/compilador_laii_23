@@ -29,6 +29,12 @@ import TablaSimbolos.simbolos;
 
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
+
+import analizador.s.pilaBloques;
+import analizador.s.analizadorSintactico;
+import analizador.s.consolaShow;
+import TablaSimbolos.tablaSimbolos;
+
 import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -62,7 +68,7 @@ public class NewJFrame extends JFrame implements ActionListener {
       
 
        model.addColumn("ID");
-       model.addColumn("Tipo");
+       model.addColumn("No. Token");
        model.addColumn("Token");
        model.addColumn("Descripción");
        model.addColumn("Lexema");
@@ -71,10 +77,11 @@ public class NewJFrame extends JFrame implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
       PilaError = new pilaErrores();
+      tablaSimbolos tblSmb = new tablaSimbolos();
+      pilaBloques plBloq = new pilaBloques();
+      consolaShow consola = new consolaShow();
       // Se obtiene lo escrito
       String codigo = editorCodigo.getText();
-
-      // Se inicializa la instancia de la clase para el análisis léxico
       lexico_tokens token = new lexico_tokens();
       lexico_alfabeto alfabeto = new lexico_alfabeto();
 
@@ -99,6 +106,9 @@ public class NewJFrame extends JFrame implements ActionListener {
               //lblLestado.setText("O");
               break;
           }
+          analizadorSintactico sintactico = new analizadorSintactico(lineas, token, tblSmb, PilaError, plBloq, consola);
+              sintactico.analisisSintactico();
+              
 
           String[] lexemas = token.getListTokens(lineas[li]);
 
@@ -120,6 +130,7 @@ public class NewJFrame extends JFrame implements ActionListener {
           lblSalida.setText("Análisis léxico exitoso");
           lblLestado.setForeground(green);
           lblLestado.setText("O");
+          
       }
       // Aquí es donde se verifica la pila de errores
         if(PilaError.estaVacia()){
