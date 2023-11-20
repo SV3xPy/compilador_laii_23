@@ -303,11 +303,11 @@ public class booleanoExpReg {
                 }
             // Expresiones logicas
             }
-            else if(expresion.get(i).equals("&&"))
+            else if(expresion.get(i).equals("&"))
             {
                 aux.add(expresion.get(i));
             }
-            else if(expresion.get(i).equals("||"))
+            else if(expresion.get(i).equals("|"))
             {
                 aux.add(expresion.get(i));
             }
@@ -426,11 +426,11 @@ public class booleanoExpReg {
         else if(tblSmb.obtenerTokenSimbolo(varIzq).obtenerToken().equals("VARBOOLEANO"))
         {
             String aux = tblSmb.obtenerTokenSimbolo(varIzq).obtenerValor();
-            if(aux.equals("verdad"))
+            if(aux.equals("true"))
             {
                 izq = true;
             }
-            else if(aux.equals("falso"))
+            else if(aux.equals("false"))
             {
                 izq = false;
             }
@@ -455,11 +455,11 @@ public class booleanoExpReg {
         else if(tblSmb.obtenerTokenSimbolo(varDer).obtenerToken().equals("VARBOOLEANO"))
         {
             String aux = tblSmb.obtenerTokenSimbolo(varDer).obtenerValor();
-            if(aux.equals("verdad"))
+            if(aux.equals("true"))
             {
                 der = true;
             }
-            else if(aux.equals("falso"))
+            else if(aux.equals("false"))
             {
                 der = false;
             }

@@ -8,22 +8,21 @@ package analizador.s;
  *
  * @author Cristhian
  */
-public class consolaShow 
-{
+
+public class consolaShow {
+
     String contConsola = "";
-    
-    public String obtenerContConsola()
-    {
+
+    public String obtenerContConsola() {
         return contConsola;
     }
-    
-    public void agregarContConsola(String texto)
-    {
+
+    public void agregarContConsola(String texto) {
         contConsola += "\n" + texto;
+        System.out.println(contConsola);
     }
-    
-    public void vaciar()
-    {
+
+    public void vaciar() {
         contConsola = "";
     }
 }

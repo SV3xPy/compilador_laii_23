@@ -29,7 +29,7 @@ public class booleano {
 
     void q0(String valor){
         String v = valor.trim();
-        if(v.equals("verdad") || v.equals("falso") || v.equals("1")  || v.equals("0") )
+        if(v.equals("true") || v.equals("false"))
             acept = true; 
         
     }

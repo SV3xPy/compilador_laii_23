@@ -36,9 +36,11 @@ public class lexico_tokens {
         if(lexema.equals("point"))
             return id + ",POINT,12,Palabra reservada,"+lexema;   
         if(lexema.equals("booleano"))
-            return id + ",BOOLEANO,22,Palabra reservada,"+lexema;    
+            return id + ",BOOLEANO,13,Palabra reservada,"+lexema;    
         if(lexema.equals("text"))
-            return id + ",TEXT,13,Palabra reservada,"+lexema;
+            return id + ",TEXT,14,Palabra reservada,"+lexema;
+        if(lexema.equals("principal"))
+            return id + ",PRINCIPAL,20,Palabra reservada,"+lexema;
         if(esOpArtimetico(lexema))
             return id + ",OPARITMETICO,21,Operador aritmético,"+lexema;    
         if(esOpLogico(lexema))

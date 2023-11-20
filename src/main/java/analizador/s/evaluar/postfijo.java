@@ -35,7 +35,7 @@ public class postfijo
         {
             if (operadores.contains("" + entrada.peek())) 
             {
-                tempOp.push(evaluar(tempOp.pop(), tempOp.pop(), tempOp.pop()) + "");
+                tempOp.push(evaluar(entrada.pop(), tempOp.pop(), tempOp.pop()) + "");
             } 
             else 
             {

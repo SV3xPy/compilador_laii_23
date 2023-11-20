@@ -118,14 +118,14 @@ public class analizadorSintactico
                     }
                 }*/ 
                 else if((datos[0].equals("int") || (datos[0].equals("text")) || (datos[0].equals("booleano")) || (datos[0].equals("point"))) // Declaracion de variables
-                        || (vars[0].equals("VARIABLE"))) 
+                        || (vars[1].equals("VARIABLE"))) 
                 { // Validacion de variable ya declarada
                     if(ban) 
                     {
                         try 
                         {
                             variablesExpReg erv;
-                            if((vars[0].equals("VARIABLE"))) 
+                            if((vars[1].equals("VARIABLE"))) 
                             { // Iniciazada
                                 erv = new variablesExpReg(datos, codigo[i], token, this.tblSmb, this.plErr, i, true);
                             } 
@@ -133,7 +133,7 @@ public class analizadorSintactico
                             { // A declarar
                                 erv = new variablesExpReg(datos, codigo[i], token, this.tblSmb, this.plErr, i, false);
                             }
-                            erv.validarExpReg();
+                            erv.validarExpReg(); //Breakpoint 2
                         } 
                         catch(Exception e) 
                         {
@@ -168,7 +168,7 @@ public class analizadorSintactico
                                 ban = true;
                             }
                         } 
-                        else if (plBloq.pila.get(plBloq.pila.size() - 1).substring(0, 8).equals("aslong")) 
+                        else if (plBloq.pila.get(plBloq.pila.size() - 1).substring(0, 6).equals("aslong")) 
                         {
                             if (ban) 
                             {
@@ -176,7 +176,7 @@ public class analizadorSintactico
                                 //System.out.println("Volver a la linea " + PilaBloques.pila.get(PilaBloques.pila.size() - 1).substring(9));
                                 if (plErr.estaVacia()) 
                                 {
-                                    i = Integer.parseInt(plBloq.pila.get(plBloq.pila.size() - 1).substring(9)) - 1;
+                                    i = Integer.parseInt(plBloq.pila.get(plBloq.pila.size() - 1).substring(7)) - 1;
                                 } 
                                 else 
                                 {
@@ -199,7 +199,7 @@ public class analizadorSintactico
                 { // Cometarios
                     // *NO HACE NADA* 
                 } 
-                else if (datos[0].equals("imprimir")) 
+                else if (datos[0].equals("show")) 
                 { // Cometarios
                     if (ban) 
                     {

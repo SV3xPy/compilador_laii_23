@@ -49,7 +49,7 @@ public class variablesExpReg
             // Tipo de dato
             String td = token.getToken(lineas[0]);
             desctd =  td.split(",");
-            int numt = Integer.parseInt(desctd[1]);
+            int numt = Integer.parseInt(desctd[2]);
             if((numt > 10) && (numt < 15) )
             {
                 q0 = true;
@@ -62,8 +62,8 @@ public class variablesExpReg
         }
         else if(init)
         {
-            // Variables ya declaradas
-            //System.out.println("YA DECLARADA");
+            //Variables ya declaradas
+            System.out.println("YA DECLARADA");
             try 
             {
                 q5();
@@ -82,13 +82,14 @@ public class variablesExpReg
             // Nombre de la variable
             String nv = token.getToken(lineas[1]);
             String[] descnv = nv.split(",");
-            if(descnv[2].equals("Token no especificado"))
+            if(descnv[2].equals("Token no especificado")) 
             { // No es un token existente
                 q1 = true;
                 q1();
             }
             else
             {
+                //Breakpoint 4
                 plErr.push(new errores(String.valueOf(clinea+1),"Error semántico: La variable a declarar ya es una palabra reservada." , "305"));
             }
         }
@@ -101,7 +102,7 @@ public class variablesExpReg
             // Signo de Igualacion
             String si = token.getToken(lineas[2]);
             String[] descsi =  si.split(",");
-            if(descsi[2].equals("Operador de asignación"))
+            if(descsi[3].equals("Operador de asignación"))
             {
                 q2 = true;
                 q2();
@@ -121,21 +122,21 @@ public class variablesExpReg
             String cv = token.getToken(lineas[3]);
             String[] desccv =  cv.split(",");
             // ANALISIS SEMANTICO
-            if(desctd[0].equals("ENTERO"))
+            if(desctd[1].equals("INT"))
             {
                 if(desccv[0].equals("NUMERO"))
                 {
                     q3 = true;
                 }
             }
-            else if(desctd[0].equals("TEXTO"))
+            else if(desctd[1].equals("TEXT"))
             {
                 if(desccv[0].equals("CADENA"))
                 {
                     q3 = true;
                 }
             }
-            else if(desctd[0].equals("BOOLEANO"))
+            else if(desctd[1].equals("BOOLEANO"))
             {
                 if(desccv[0].equals("TDBOOLEANO"))
                 {
@@ -158,9 +159,9 @@ public class variablesExpReg
         if(q0 && q1 && q2 && q3)
         {
             // Delimitador ;
-            String pc = token.getToken(lineas[4]);
+            String pc = token.getToken(lineas[4]); //bREAKPOINT 3
             String[] descpc =  pc.split(",");
-            if(descpc[2].equals("Delimitador"))
+            if(descpc[3].equals("Delimitador"))
             {
                 q4 = true;
                 q4();
@@ -183,11 +184,11 @@ public class variablesExpReg
         if(q0 && q1 && q2 && q3 && q4)
         {
             token.variables.add(lineas[1]);
-            if(lineas[0].equals("entero"))
+            if(lineas[0].equals("int"))
             {
                 this.tblSmb.agregarSimbolo(new simbolos(("VARENTERO 75 " + lineas[1] + " " + lineas[3]).split(" ")));
             }
-            if(lineas[0].equals("texto"))
+            if(lineas[0].equals("text"))
             {
                 this.tblSmb.agregarSimbolo(new simbolos(("VARTEXTO 76 " + lineas[1] + " " + lineas[3]).split(" ")));
             }

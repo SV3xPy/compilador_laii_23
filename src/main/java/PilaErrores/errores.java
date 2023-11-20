@@ -39,20 +39,20 @@ public class errores {
         return this.codigoError;
     }
     //Devuelve línea del error
-    public String getLineaError()
+    /*public String getLineaError()
     {
         return this.lineaError;
     }
     
-    //Devuelve descripción del error
+    Devuelve descripción del error
     public String getDescError()
     {
         return this.descError;
     }
     
-    //Devuelve código del error
+    Devuelve código del error
     public String getCodigoError()
     {
         return this.codigoError;
-    }
+    }*/
 }
