@@ -34,6 +34,7 @@ import analizador.s.pilaBloques;
 import analizador.s.analizadorSintactico;
 import analizador.s.consolaShow;
 import TablaSimbolos.tablaSimbolos;
+import java.awt.Color;
 
 import java.util.Map;
 import javax.swing.JFileChooser;
@@ -42,10 +43,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.SimpleAttributeSet;
 
 /**
  *
@@ -53,15 +62,19 @@ import javax.swing.text.Document;
  */
 public class NewJFrame extends JFrame implements ActionListener {
 
+    private Timer timer;
     private File openedFile;
     private Map<String, simbolos> tablaSimbolos = new HashMap<>();
     private pilaErrores PilaError;
+    NumeroLinea numeroLinea;
+    private boolean resaltando = false; // Bandera para evitar bucle infinito
 
     /**
      * Creates new form NewJFrame
      */
     public NewJFrame() {
         initComponents();
+        this.setLocationRelativeTo(null);
         DefaultTableModel model = new DefaultTableModel();
         tblTokens.setModel(model);
         txtSalida.setEditable(false);
@@ -77,7 +90,9 @@ public class NewJFrame extends JFrame implements ActionListener {
         lblSin.setText("O");
         lblSem.setForeground(red);
         lblSem.setText("O");
-
+        //Codigo para contar las lineas en el scroll
+        numeroLinea = new NumeroLinea(editorCodigo);
+        jScrollPane3.setRowHeaderView(numeroLinea);
         btnCompilar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -176,18 +191,131 @@ public class NewJFrame extends JFrame implements ActionListener {
                 }
             }
         });
+        editorCodigo.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                if (!resaltando) {
+                    resaltando = true;
+                    // Espera 500 milisegundos antes de realizar la actualización
+                    if (timer != null) {
+                        timer.stop();
+                    }
+                    timer = new Timer(500, evt -> actualizarResaltado());
+                    timer.setRepeats(false);
+                    timer.start();
+                    resaltando = false;
+                }
+
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if (!resaltando) {
+                    resaltando = true;
+                    // Espera 500 milisegundos antes de realizar la actualización
+                    if (timer != null) {
+                        timer.stop();
+                    }
+                    timer = new Timer(500, evt -> actualizarResaltado());
+                    timer.setRepeats(false);
+                    timer.start();
+                    resaltando = false;
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                if (!resaltando) {
+                    resaltando = true;
+                    // Espera 500 milisegundos antes de realizar la actualización
+                    if (timer != null) {
+                        timer.stop();
+                    }
+                    timer = new Timer(500, evt -> actualizarResaltado());
+                    timer.setRepeats(false);
+                    timer.start();
+                    resaltando = false;
+                }
+            }
+        });
+    }
+
+    //CLASES PARA APLICAR EL COLOREADO A LAS PALABRAS RESERVADAS
+    private void actualizarResaltado() {
+        Document document = editorCodigo.getDocument();
+        try {
+            String texto = document.getText(0, document.getLength());
+            int ultimaLineaInicio = texto.lastIndexOf('\n') + 1;
+            //Llamada a resaltarPalabrasReservadas
+            resaltarPalabrasReservadas("int", Color.BLUE, texto);
+            resaltarPalabrasReservadas("point", Color.BLUE, texto);
+            resaltarPalabrasReservadas("text", Color.BLUE, texto);
+            resaltarPalabrasReservadas("if", Color.GREEN, texto);
+            resaltarPalabrasReservadas("else", Color.GREEN, texto);
+            resaltarPalabrasReservadas("aslong", Color.RED, texto);
+            resaltarPalabrasReservadas("@@", Color.GRAY, texto);
+            resaltarPalabrasReservadas("show", Color.MAGENTA, texto);
+            resaltarPalabrasReservadas("booleano", Color.BLUE, texto);
+            resaltarPalabrasReservadas("principal", Color.CYAN, texto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
+    private void abertura_Archivo(String rutaArchivoPredefinido) {
+        try {
+            openedFile = new File(rutaArchivoPredefinido);
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(openedFile), "UTF-8"));
+            String line = in.readLine();
+            editorCodigo.setText("");
+            while (line != null) {
+                Document doc = editorCodigo.getDocument();
+                doc.insertString(doc.getLength(), line + "\n", null);
+                line = in.readLine();
+            }
+
+            in.close();
+            String filePath = openedFile.getAbsolutePath();
+            mostrarRuta.setText(filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void resaltarPalabrasReservadas(String palabraReser, Color color, String texto) {
+        StyledDocument doc = editorCodigo.getStyledDocument();
+        //String texto = editorCodigo.getText();
+        int pos = 0;
+        while ((pos = texto.indexOf(palabraReser, pos)) >= 0) {
+            final int inicio = pos;
+            final int longitud = palabraReser.length();
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    doc.setCharacterAttributes(inicio, longitud, getEstilo(color), true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            pos += longitud;
+        }
+    }
+
+    private SimpleAttributeSet getEstilo(Color color) {
+        SimpleAttributeSet estilo = new SimpleAttributeSet();
+        StyleConstants.setForeground(estilo, color);
+        StyleConstants.setBold(estilo, true);
+        return estilo;
+    }
+
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenu2 = new javax.swing.JMenu();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTokens = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -210,6 +338,10 @@ public class NewJFrame extends JFrame implements ActionListener {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Abrir = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        ejemplo_1 = new javax.swing.JMenuItem();
+        ejemplo_2 = new javax.swing.JMenuItem();
+        ejemplo_3 = new javax.swing.JMenuItem();
         Guardar = new javax.swing.JMenuItem();
         guardarComo = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
@@ -222,6 +354,8 @@ public class NewJFrame extends JFrame implements ActionListener {
         docASin = new javax.swing.JMenuItem();
         docASem = new javax.swing.JMenuItem();
         docComp = new javax.swing.JMenuItem();
+
+        jMenu2.setText("jMenu2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(238, 240, 235));
@@ -245,10 +379,13 @@ public class NewJFrame extends JFrame implements ActionListener {
         jScrollPane2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         txtSalida.setColumns(20);
+        txtSalida.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         txtSalida.setRows(5);
         jScrollPane2.setViewportView(txtSalida);
 
         jScrollPane3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        editorCodigo.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         jScrollPane3.setViewportView(editorCodigo);
 
         jLabel1.setFont(new java.awt.Font("Engravers MT", 0, 24)); // NOI18N
@@ -295,6 +432,34 @@ public class NewJFrame extends JFrame implements ActionListener {
             }
         });
         jMenu1.add(Abrir);
+
+        jMenu4.setText("Ejemplos");
+
+        ejemplo_1.setText("AlgoAqui");
+        ejemplo_1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ejemplo_1ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(ejemplo_1);
+
+        ejemplo_2.setText("AlgoAqui");
+        ejemplo_2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ejemplo_2ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(ejemplo_2);
+
+        ejemplo_3.setText("AlgoAqui");
+        ejemplo_3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ejemplo_3ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(ejemplo_3);
+
+        jMenu1.add(jMenu4);
 
         Guardar.setText("Guardar");
         Guardar.addActionListener(new java.awt.event.ActionListener() {
@@ -424,28 +589,21 @@ public class NewJFrame extends JFrame implements ActionListener {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(31, 31, 31)
                                 .addComponent(lblSem, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
+                        .addContainerGap(186, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 577, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(52, 52, 52)
-                                .addComponent(btnCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                                .addComponent(btnCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(143, 143, 143))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(98, 98, 98))))))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(46, 46, 46)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(632, Short.MAX_VALUE)))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(50, 50, 50))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -466,7 +624,7 @@ public class NewJFrame extends JFrame implements ActionListener {
                                     .addComponent(lblLex, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblSin, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblSem, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(16, 16, 16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
@@ -476,27 +634,25 @@ public class NewJFrame extends JFrame implements ActionListener {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnCompilar)
                             .addComponent(jLabel4))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(294, 294, 294)
+                        .addGap(1, 1, 1)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(45, 45, 45))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(101, 101, 101)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(205, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(51, 51, 51))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void docALexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_docALexActionPerformed
-        File file = new File("src\\main\\java\\resources\\blank.txt");
+        File file = new File("src\\main\\java\\resources\\lexico.pdf");
         try {
             Desktop.getDesktop().open(file);
         } catch (IOException e) {
@@ -538,7 +694,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     }//GEN-LAST:event_docALexMouseClicked
 
     private void docASinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_docASinActionPerformed
-        File file = new File("src\\main\\java\\resources\\DocumentacionExamen.pdf");
+        File file = new File("src\\main\\java\\resources\\sintactico.pdf");
         try {
             Desktop.getDesktop().open(file);
         } catch (IOException e) {
@@ -547,7 +703,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     }//GEN-LAST:event_docASinActionPerformed
 
     private void docASemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_docASemActionPerformed
-        File file = new File("src\\main\\java\\resources\\DocumentacionExamen.pdf");
+        File file = new File("src\\main\\java\\resources\\semantico.pdf");
         try {
             Desktop.getDesktop().open(file);
         } catch (IOException e) {
@@ -628,6 +784,21 @@ public class NewJFrame extends JFrame implements ActionListener {
         editorCodigo.setText("");
     }//GEN-LAST:event_limpiarTodoActionPerformed
 
+    private void ejemplo_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejemplo_1ActionPerformed
+        String rutaArchivoPredefinido = ("src\\main\\java\\resources\\ejem1.txt");
+        abertura_Archivo(rutaArchivoPredefinido);
+    }//GEN-LAST:event_ejemplo_1ActionPerformed
+
+    private void ejemplo_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejemplo_2ActionPerformed
+        String rutaArchivoPredefinido = ("src\\main\\java\\resources\\ejem2.txt");
+        abertura_Archivo(rutaArchivoPredefinido);
+    }//GEN-LAST:event_ejemplo_2ActionPerformed
+
+    private void ejemplo_3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejemplo_3ActionPerformed
+          String rutaArchivoPredefinido = ("src\\main\\java\\resources\\ejem3.txt");
+        abertura_Archivo(rutaArchivoPredefinido);
+    }//GEN-LAST:event_ejemplo_3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -675,6 +846,9 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JMenuItem docASin;
     private javax.swing.JMenuItem docComp;
     private javax.swing.JTextPane editorCodigo;
+    private javax.swing.JMenuItem ejemplo_1;
+    private javax.swing.JMenuItem ejemplo_2;
+    private javax.swing.JMenuItem ejemplo_3;
     private javax.swing.JMenuItem guardarComo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -685,7 +859,9 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

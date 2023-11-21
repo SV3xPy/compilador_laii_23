@@ -1,0 +1,11 @@
+principal {
+    int a = 10 ;
+    int b = 20 ;
+    if (a > b) {
+        show "variable" ;
+    } 
+    aslong (a < b) {
+        a = a+1 ;
+    }
+    @@ Esto es un comentario
+}
