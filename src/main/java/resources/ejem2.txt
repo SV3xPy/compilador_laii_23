@@ -1,0 +1,24 @@
+principal {
+    int a = 1 ;
+    int b = 10 ;
+   booleano ban = true ;
+   booleano opc = false ; 
+   show "a: "+a ;
+   show "b: "+b ;
+   a = b*(23+6)-1 ;
+   b = 2*23+a-1 ;
+   show "a: "+a ;
+   show "b: "+b ;
+   if (a<b|b>=a) {
+      show "Condicion 1" ;
+   }
+   if (ban&opc) {
+      show "Condicion 2" ;
+  }
+   if (a >= b | b > a) {
+       show "Condicion 3" ;
+   }
+   if (ban | opc & a<b) {
+       show "Condicion 4" ;
+   }
+}

@@ -17,7 +17,7 @@ public class numero {
         this.cadena = cadena;
     }
 
-    public boolean start(){
+    public boolean inicio(){
         if(cadena.length() > 0)
             q0(cadena.charAt(0));
         if(acept)
