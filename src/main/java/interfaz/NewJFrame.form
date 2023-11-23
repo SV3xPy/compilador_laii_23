@@ -199,27 +199,31 @@
                       <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" pref="303" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                              <Component id="btn_Lex" min="-2" pref="30" max="-2" attributes="0"/>
+                          </Group>
                           <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblLex" min="-2" pref="23" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                               <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="lblSin" min="-2" pref="23" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
+                              <Component id="btn_Sin" min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                              <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                              <Component id="lblSem" min="-2" pref="23" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                              <Component id="btn_Sem" min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="186" max="32767" attributes="0"/>
@@ -262,10 +266,10 @@
                                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lblLex" min="-2" pref="20" max="-2" attributes="0"/>
-                                  <Component id="lblSin" min="-2" pref="20" max="-2" attributes="0"/>
-                                  <Component id="lblSem" min="-2" pref="20" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="btn_Lex" min="-2" pref="21" max="-2" attributes="0"/>
+                                  <Component id="btn_Sin" min="-2" pref="21" max="-2" attributes="0"/>
+                                  <Component id="btn_Sem" min="-2" pref="21" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -461,17 +465,13 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Compilar"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCompilarActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
         <Property name="text" type="java.lang.String" value="L&#xc9;XICO"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lblLex">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="66" green="66" red="66" type="rgb"/>
-        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -484,17 +484,24 @@
         <Property name="text" type="java.lang.String" value="SEM&#xc1;NTICO"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblSin">
+    <Component class="javax.swing.JButton" name="btn_Lex">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="66" green="66" red="66" type="rgb"/>
+          <Color blue="0" green="0" red="ff" type="rgb"/>
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblSem">
+    <Component class="javax.swing.JButton" name="btn_Sin">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="66" green="66" red="66" type="rgb"/>
+          <Color blue="0" green="0" red="ff" type="rgb"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btn_Sem">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="0" red="ff" type="rgb"/>
         </Property>
       </Properties>
     </Component>

@@ -84,18 +84,15 @@ public class NewJFrame extends JFrame implements ActionListener {
         model.addColumn("Token");
         model.addColumn("Descripción");
         model.addColumn("Lexema");
-        lblLex.setForeground(red);
-        lblLex.setText("O");
-        lblSin.setForeground(red);
-        lblSin.setText("O");
-        lblSem.setForeground(red);
-        lblSem.setText("O");
         //Codigo para contar las lineas en el scroll
         numeroLinea = new NumeroLinea(editorCodigo);
         jScrollPane3.setRowHeaderView(numeroLinea);
         btnCompilar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                btn_Lex.setBackground(red);
+                btn_Sin.setBackground(red);
+                btn_Sem.setBackground(red);
                 txtSalida.setText("");
                 model.setRowCount(0);
                 PilaError = new pilaErrores();
@@ -147,12 +144,10 @@ public class NewJFrame extends JFrame implements ActionListener {
                 // Si no hay errores de alfabeto, mostrar mensaje de éxito
                 if (bandAlf) {
                     txtSalida.append("\nAnálisis léxico exitoso");
-                    lblLex.setForeground(green);
-                    lblLex.setText("O");
+                    btn_Lex.setBackground(green);
                 } else {
                     txtSalida.append("\nAnálisis léxico fallido");
-                    lblLex.setForeground(yellow);
-                    lblLex.setText("O");
+                    btn_Lex.setBackground(yellow);
                     return;
                 }
 
@@ -167,11 +162,9 @@ public class NewJFrame extends JFrame implements ActionListener {
                 if (PilaError.estaVacia()) {
                     // El programa se ejecutó sin errores
                     txtSalida.append("\nAnálisis sintáctico exitoso");
-                    lblSin.setForeground(green);
-                    lblSin.setText("O");
+                    btn_Sin.setBackground(green);
                     txtSalida.append("\nAnálisis semántico exitoso");
-                    lblSem.setForeground(green);
-                    lblSem.setText("O");
+                    btn_Sem.setBackground(green);
                 } else {
                     // Errores en tiempo de compilación
                     String text = "";
@@ -184,11 +177,9 @@ public class NewJFrame extends JFrame implements ActionListener {
                     }
                     txtSalida.append("\n\n" + text);
                     txtSalida.append("\nAnálisis sintáctico fallido");
-                    lblSin.setForeground(yellow);
-                    lblSin.setText("O");
+                    btn_Sin.setBackground(yellow);
                     txtSalida.append("\nAnálisis semántico fallido");
-                    lblSem.setForeground(yellow);
-                    lblSem.setText("O");
+                    btn_Sem.setBackground(yellow);
                 }
             }
         });
@@ -331,11 +322,11 @@ public class NewJFrame extends JFrame implements ActionListener {
         mostrarRuta = new javax.swing.JTextField();
         btnCompilar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        lblLex = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        lblSin = new javax.swing.JLabel();
-        lblSem = new javax.swing.JLabel();
+        btn_Lex = new javax.swing.JButton();
+        btn_Sin = new javax.swing.JButton();
+        btn_Sem = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Abrir = new javax.swing.JMenuItem();
@@ -409,18 +400,23 @@ public class NewJFrame extends JFrame implements ActionListener {
         btnCompilar.setBackground(new java.awt.Color(40, 75, 99));
         btnCompilar.setForeground(new java.awt.Color(244, 249, 233));
         btnCompilar.setText("Compilar");
+        btnCompilar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompilarActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("LÉXICO");
-
-        lblLex.setBackground(new java.awt.Color(102, 102, 102));
 
         jLabel7.setText("SINTÁCTICO");
 
         jLabel8.setText("SEMÁNTICO");
 
-        lblSin.setBackground(new java.awt.Color(102, 102, 102));
+        btn_Lex.setBackground(new java.awt.Color(255, 0, 0));
 
-        lblSem.setBackground(new java.awt.Color(102, 102, 102));
+        btn_Sin.setBackground(new java.awt.Color(255, 0, 0));
+
+        btn_Sem.setBackground(new java.awt.Color(255, 0, 0));
 
         jMenuBar1.setBackground(new java.awt.Color(180, 184, 171));
 
@@ -573,23 +569,25 @@ public class NewJFrame extends JFrame implements ActionListener {
                         .addGap(56, 56, 56)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel6)
-                            .addComponent(lblLex, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(btn_Lex, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel6))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(37, 37, 37)
-                                .addComponent(jLabel7)
-                                .addGap(27, 27, 27))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblSin, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(38, 38, 38)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
+                                .addComponent(jLabel7))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addComponent(lblSem, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(57, 57, 57)
+                                .addComponent(btn_Sin, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel8))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addComponent(btn_Sem, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(186, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -621,10 +619,10 @@ public class NewJFrame extends JFrame implements ActionListener {
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblLex, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblSin, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblSem, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btn_Lex, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btn_Sin, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btn_Sem, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2))
                     .addGroup(layout.createSequentialGroup()
@@ -800,6 +798,10 @@ public class NewJFrame extends JFrame implements ActionListener {
         abertura_Archivo(rutaArchivoPredefinido);
     }//GEN-LAST:event_ejemplo_3ActionPerformed
 
+    private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
+        
+    }//GEN-LAST:event_btnCompilarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -842,6 +844,9 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JMenu Ayuda;
     private javax.swing.JMenuItem Guardar;
     private javax.swing.JButton btnCompilar;
+    private javax.swing.JButton btn_Lex;
+    private javax.swing.JButton btn_Sem;
+    private javax.swing.JButton btn_Sin;
     private javax.swing.JMenuItem docALex;
     private javax.swing.JMenuItem docASem;
     private javax.swing.JMenuItem docASin;
@@ -867,9 +872,6 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JLabel lblLex;
-    private javax.swing.JLabel lblSem;
-    private javax.swing.JLabel lblSin;
     private javax.swing.JMenuItem limpiarConsola;
     private javax.swing.JMenuItem limpiarEditorCodigo;
     private javax.swing.JMenuItem limpiarTablaSimbolos;
