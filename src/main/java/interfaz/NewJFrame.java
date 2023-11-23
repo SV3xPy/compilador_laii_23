@@ -146,13 +146,14 @@ public class NewJFrame extends JFrame implements ActionListener {
 
                 // Si no hay errores de alfabeto, mostrar mensaje de éxito
                 if (bandAlf) {
-                    txtSalida.append("Análisis léxico exitoso");
+                    txtSalida.append("\nAnálisis léxico exitoso");
                     lblLex.setForeground(green);
                     lblLex.setText("O");
                 } else {
-                    txtSalida.append("Análisis léxico fallido");
+                    txtSalida.append("\nAnálisis léxico fallido");
                     lblLex.setForeground(yellow);
                     lblLex.setText("O");
+                    return;
                 }
 
                 analizadorSintactico sintactico = new analizadorSintactico(lineas, token, tblSmb, PilaError, plBloq, consola);
@@ -165,10 +166,10 @@ public class NewJFrame extends JFrame implements ActionListener {
                 // Aquí es donde se verifica la pila de errores
                 if (PilaError.estaVacia()) {
                     // El programa se ejecutó sin errores
-                    txtSalida.append("Análisis sintáctico exitoso");
+                    txtSalida.append("\nAnálisis sintáctico exitoso");
                     lblSin.setForeground(green);
                     lblSin.setText("O");
-                    txtSalida.append("Análisis semántico exitoso");
+                    txtSalida.append("\nAnálisis semántico exitoso");
                     lblSem.setForeground(green);
                     lblSem.setText("O");
                 } else {
@@ -182,10 +183,10 @@ public class NewJFrame extends JFrame implements ActionListener {
                         text = text + "Línea: " + l + "\nDescripción: " + D + "\nCódigo del error: " + C + "\n\n";
                     }
                     txtSalida.append("\n\n" + text);
-                    txtSalida.append("Análisis sintáctico fallido");
+                    txtSalida.append("\nAnálisis sintáctico fallido");
                     lblSin.setForeground(yellow);
                     lblSin.setText("O");
-                    txtSalida.append("Análisis semántico fallido");
+                    txtSalida.append("\nAnálisis semántico fallido");
                     lblSem.setForeground(yellow);
                     lblSem.setText("O");
                 }

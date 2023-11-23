@@ -213,7 +213,10 @@ public class analizadorSintactico
                 } 
                 else 
                 {
-                    plErr.push(new errores(String.valueOf(i + 1), "Error sintáctico: Token no reconocido.", "101"));
+                    if (Character.isLetter(datos[0].charAt(0))) {
+                        plErr.push(new errores(String.valueOf(i + 1), "Error sintáctico: Error uso de variable, mal definida", "104"));
+                        
+                    }
                 }
             }
         }
