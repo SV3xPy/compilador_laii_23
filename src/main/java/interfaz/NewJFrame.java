@@ -104,6 +104,7 @@ public class NewJFrame extends JFrame implements ActionListener {
                 String codigo = editorCodigo.getText();
                 lexico_tokens token = new lexico_tokens();
                 lexico_alfabeto alfabeto = new lexico_alfabeto();
+                Map<Character, Integer> caracteresErrores = new HashMap<>();
 
                 // Obtener el modelo de la tabla existente
                 // Realizar análisis léxico
@@ -113,15 +114,19 @@ public class NewJFrame extends JFrame implements ActionListener {
                 boolean bandAlf = true;
 
                 for (int li = 0; lineas.length > li && bandAlf; li++) { //Primer breakpoint
-                    if (!alfabeto.validar(lineas[li])) {
-                        bandAlf = false;
-                        errores error = new errores(Integer.toString(li + 1), "Caracteres no permitidos", "E1");
-                        PilaError.push(error);
-
+                    caracteresErrores = alfabeto.caracteresConErrores(lineas[li]);
+                    if (!caracteresErrores.isEmpty()) {
+                        // Procesar caracteres no permitidos y sus códigos de error
+                        for (Map.Entry<Character, Integer> entry : caracteresErrores.entrySet()) {
+                            char caracter = entry.getKey();
+                            int codigoError = entry.getValue();
+                            txtSalida.append("Línea " + (li + 1) + "\n"+"Carácter no permitido [" + caracter + "] con código de error: " + codigoError);                            
+                        }
+                        
                         // lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
                         //lblLestado.setForeground(red);
                         //lblLestado.setText("O");
-                        break;
+                        return;
                     }
                     //analizadorSintactico sintactico = new analizadorSintactico(lineas, token, tblSmb, PilaError, plBloq, consola);
                     //sintactico.analisisSintactico();

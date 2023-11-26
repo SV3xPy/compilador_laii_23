@@ -8,12 +8,17 @@ import java.util.ArrayList;
 import analizador.s.booleano;
 import analizador.s.cadena;
 import analizador.s.numero;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  *
  * @author COMPUTOCKS
  */
 public class lexico_tokens {
     public ArrayList<String> variables = new ArrayList<>();
+    private Set<String> variablesEncontradas = new HashSet<>();
     cadena AutCadenas;
     numero AutNumeros;
     booleano AutBooleana;
@@ -22,6 +27,9 @@ public class lexico_tokens {
 
     public String getToken(String lexema){
         String id = Integer.toString(nextId++); // Generar un ID único
+        
+        
+        
 
         if(lexema.equals("if"))
             return id + ",IF,1,Palabra reservada,"+lexema;
@@ -41,8 +49,8 @@ public class lexico_tokens {
             return id + ",TEXT,14,Palabra reservada,"+lexema;
         if(lexema.equals("principal"))
             return id + ",PRINCIPAL,20,Palabra reservada,"+lexema;
-        if(esOpArtimetico(lexema))
-            return id + ",OPARITMETICO,21,Operador aritmético,"+lexema;    
+        if(esOpAritmetico(lexema))
+            return id + ",OP ARITMETICO,21,Operador aritmético,"+lexema;    
         if(esOpLogico(lexema))
             return id + ",OPLOGICO,31,Operador lógico,"+lexema;       
         if(esOpComparacion(lexema))
@@ -64,21 +72,40 @@ public class lexico_tokens {
         if(lexema.equals("@@"))
             return id + ",COMENTARIO,80,Comentario de una línea,"+lexema;
         if(lexema.equals("#@"))
-            return id + ",COMENTARIOINICIO,81,Comentario de más de dos líneas inicio,"+lexema;
+            return id + ",COMENTARIOINICIO,81,Comentario de más de una línea inicio,"+lexema;
         if(lexema.equals("@#"))
-            return id + ",COMENTARIOFIN,82,Comentario de más de dos líneas fin,"+lexema;
+            return id + ",COMENTARIOFIN,82,Comentario de más de una línea fin,"+lexema;
         if(lexema.equals("show"))
-            return id + ",SHOW,100,Imprimir,"+lexema;
+            return id + ",SHOW,100,Imprimir,"+lexema; 
+        if(esOpLogico(lexema))
+            return id +"OPLOGICO,31,Operador lógico,"+lexema;       
+        if(esOpComparacion(lexema))
+            return id +"OPCOMPARACION,41,Operador de comparación,"+lexema; 
+        
+        
+        // Verificar si el lexema es una variable y si no ha sido añadida previamente
+        if (esVariable(lexema) && !variablesEncontradas.contains(lexema)) {
+            variablesEncontradas.add(lexema);
+            return id + ",VARIABLE,75,Variable," + lexema;
+        }
+        
+        
         String buscToken = buscarToken(lexema);
         if(buscToken!=null)
             return buscToken;
         return "TOKEN NO ENCONTRADO,-1,Token no especificado,"+lexema;
     }
     
-    boolean esOpArtimetico(String lexema){
-        if(lexema.equals("+") || lexema.equals("*") || lexema.equals("/") || lexema.equals("-") || lexema.equals("%"))
-            return true;
-        return false;
+    public boolean esOpAritmetico(String lexema) {
+        // Definir un conjunto que contenga los operadores aritméticos
+        Set<String> operadoresAritmeticos = new HashSet<>();
+        operadoresAritmeticos.add("+");
+        operadoresAritmeticos.add("*");
+        operadoresAritmeticos.add("/");
+        operadoresAritmeticos.add("-");
+        operadoresAritmeticos.add("%");
+
+        return operadoresAritmeticos.contains(lexema);
     }
 
     boolean esOpLogico(String lexema){
@@ -107,15 +134,53 @@ public class lexico_tokens {
         return null;
     }
 
-    public String[] getListTokens(String linea){
-    lex = new lexico_lexema();
-    String[] lexemas = lex.getLexemas(linea);
-    String[] tokens = new String[lexemas.length];
-    for(int i=0;i<lexemas.length;i++){
-        System.out.println("Lexema: '" + lexemas[i] + "'");
-        tokens[i] = getToken(lexemas[i]);
-    }
-    return tokens;
+    public String[] getListTokens(String linea) {
+ lex = new lexico_lexema();
+ String[] lexemas = lex.getLexemas(linea);
+ ArrayList<String> tokensList = new ArrayList<>();
+
+ boolean ignoreSingleLineComment = false;
+ boolean ignoreMultilineComment = false;
+
+ for (String lexema : lexemas) {
+     if (ignoreSingleLineComment || ignoreMultilineComment) {
+         // Ignorar comentario de una sola línea o varias líneas
+         if (ignoreSingleLineComment && lexema.endsWith("@@")) {
+             ignoreSingleLineComment = false; // Fin del comentario de una línea
+         } 
+         continue; // Saltar procesamiento de tokens
+     }
+
+     if (lexema.equals("@@")) {
+         // Ignorar comentario de una sola línea
+         ignoreSingleLineComment = true;
+         continue;
+     } else if (lexema.equals("#@")) {
+         // Inicio del comentario de varias líneas
+         ignoreMultilineComment = true;
+         continue;
+     } else if (lexema.equals("@#")) {
+         // Fin del comentario de varias líneas
+         ignoreMultilineComment = false;
+         continue;
+     }
+
+     // Agregar a la lista de tokens si no es un comentario
+     if (!ignoreMultilineComment){
+         tokensList.add(getToken(lexema));
+     }
+     
+ }
+
+ String[] tokens = tokensList.toArray(new String[0]);
+ return tokens;
 }
+
+
+    // Método para verificar si el lexema es una variable
+    private boolean esVariable(String lexema) {
+        String regexVariable = "[a-zA-Z]+[0-9]*_?[0-9]*";
+        return lexema.matches(regexVariable);
+    }
 
 }
