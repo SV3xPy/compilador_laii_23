@@ -227,7 +227,7 @@ public class variablesExpReg
             {
                 // Evaluar expresion infija
                 //System.out.println("Expresion INFIJA");
-                evaluar ev = new evaluar(lineas[2],tblSmb);
+                evaluar ev = new evaluar(lineas[2]+lineas[3]+lineas[4],tblSmb);
                 String resultado = "" + ev.obtenerResultado();
                 System.out.println("Resuuuu "+resultado);
 

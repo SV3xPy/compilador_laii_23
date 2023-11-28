@@ -5,7 +5,7 @@ principal {
         show "variable" ;
     } 
     aslong (a < b) {
-        a = a+1 ;
+        a = a + 1 ;
     }
     @@ Esto es un comentario
 }

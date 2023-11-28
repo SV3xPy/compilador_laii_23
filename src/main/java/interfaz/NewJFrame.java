@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+  Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package interfaz;
 
@@ -110,7 +110,24 @@ public class NewJFrame extends JFrame implements ActionListener {
                 // Realizar análisis léxico
                 // Realizar análisis léxico
                 String[] lineas = codigo.split("\\R");
-
+                StringBuilder sb = new StringBuilder();
+                boolean inicio = false;
+                for (int i = 0; i < lineas.length; i++) {
+                    if (lineas[i].contains("@#")) {
+                        inicio = true;
+                    }
+                    if (inicio) {
+                        sb.append("*");
+                        sb.append(lineas[i]);
+                        if (i != lineas.length - 1) {
+                            sb.append("\n");
+                        }
+                        if (lineas[i].contains("#@")) {
+                            break;
+                        }
+                    }
+                }
+                String resultado = sb.toString();
                 boolean bandAlf = true;
 
                 for (int li = 0; lineas.length > li && bandAlf; li++) { //Primer breakpoint
@@ -120,18 +137,12 @@ public class NewJFrame extends JFrame implements ActionListener {
                         for (Map.Entry<Character, Integer> entry : caracteresErrores.entrySet()) {
                             char caracter = entry.getKey();
                             int codigoError = entry.getValue();
-                            txtSalida.append("Línea " + (li + 1) + "\n"+"Carácter no permitido [" + caracter + "] con código de error: " + codigoError);                            
+                            txtSalida.append("Línea " + (li + 1) + "\n" + "Carácter no permitido [" + caracter + "] con código de error: " + codigoError);
                         }
-                        
-                        // lblSalida.setText("Error en el análisis léxico. Caracteres no permitidos en la línea " + (li + 1));
-                        //lblLestado.setForeground(red);
-                        //lblLestado.setText("O");
                         return;
                     }
-                    //analizadorSintactico sintactico = new analizadorSintactico(lineas, token, tblSmb, PilaError, plBloq, consola);
-                    //sintactico.analisisSintactico();
 
-                    String[] lexemas = token.getListTokens(lineas[li]);
+                    String[] lexemas = token.getListTokens(lineas[li], resultado);
 
                     for (String lexema : lexemas) {
                         String resultadoToken = token.getToken(lexema);
@@ -157,7 +168,7 @@ public class NewJFrame extends JFrame implements ActionListener {
                 }
 
                 analizadorSintactico sintactico = new analizadorSintactico(lineas, token, tblSmb, PilaError, plBloq, consola);
-                sintactico.analisisSintactico();
+                sintactico.analisisSintactico(resultado);
                 String show = "";
                 show = consola.obtenerContConsola();
                 consola.vaciar();
@@ -251,6 +262,8 @@ public class NewJFrame extends JFrame implements ActionListener {
             resaltarPalabrasReservadas("else", Color.GREEN, texto);
             resaltarPalabrasReservadas("aslong", Color.RED, texto);
             resaltarPalabrasReservadas("@@", Color.GRAY, texto);
+            resaltarPalabrasReservadas("@#", Color.GRAY, texto);
+            resaltarPalabrasReservadas("#@", Color.GRAY, texto);
             resaltarPalabrasReservadas("show", Color.MAGENTA, texto);
             resaltarPalabrasReservadas("booleano", Color.BLUE, texto);
             resaltarPalabrasReservadas("principal", Color.CYAN, texto);
@@ -271,7 +284,6 @@ public class NewJFrame extends JFrame implements ActionListener {
                 doc.insertString(doc.getLength(), line + "\n", null);
                 line = in.readLine();
             }
-
             in.close();
             String filePath = openedFile.getAbsolutePath();
             mostrarRuta.setText(filePath);
@@ -282,7 +294,6 @@ public class NewJFrame extends JFrame implements ActionListener {
 
     private void resaltarPalabrasReservadas(String palabraReser, Color color, String texto) {
         StyledDocument doc = editorCodigo.getStyledDocument();
-        //String texto = editorCodigo.getText();
         int pos = 0;
         while ((pos = texto.indexOf(palabraReser, pos)) >= 0) {
             final int inicio = pos;
@@ -306,7 +317,9 @@ public class NewJFrame extends JFrame implements ActionListener {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -670,7 +683,6 @@ public class NewJFrame extends JFrame implements ActionListener {
         chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            //File file = chooser.getSelectedFile();
             openedFile = chooser.getSelectedFile();
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(openedFile), "UTF-8"));
@@ -786,6 +798,9 @@ public class NewJFrame extends JFrame implements ActionListener {
         modeloTabla.setRowCount(0);
         txtSalida.setText("");
         editorCodigo.setText("");
+        btn_Lex.setBackground(red);
+        btn_Sin.setBackground(red);
+        btn_Sem.setBackground(red);
     }//GEN-LAST:event_limpiarTodoActionPerformed
 
     private void ejemplo_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejemplo_1ActionPerformed
@@ -799,12 +814,12 @@ public class NewJFrame extends JFrame implements ActionListener {
     }//GEN-LAST:event_ejemplo_2ActionPerformed
 
     private void ejemplo_3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejemplo_3ActionPerformed
-          String rutaArchivoPredefinido = ("src\\main\\java\\resources\\ejem3.txt");
+        String rutaArchivoPredefinido = ("src\\main\\java\\resources\\ejem3.txt");
         abertura_Archivo(rutaArchivoPredefinido);
     }//GEN-LAST:event_ejemplo_3ActionPerformed
 
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
-        
+
     }//GEN-LAST:event_btnCompilarActionPerformed
 
     /**
