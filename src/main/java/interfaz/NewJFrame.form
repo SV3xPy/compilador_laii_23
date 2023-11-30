@@ -2,15 +2,6 @@
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Container class="javax.swing.JMenu" name="jMenu2">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jMenu2"/>
-      </Properties>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-        <Property name="useNullLayout" type="boolean" value="true"/>
-      </Layout>
-    </Container>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -38,7 +29,7 @@
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="ejemplo_1">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="AlgoAqui"/>
+                    <Property name="text" type="java.lang.String" value="Ejemplo 1"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ejemplo_1ActionPerformed"/>
@@ -46,7 +37,7 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="ejemplo_2">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="AlgoAqui"/>
+                    <Property name="text" type="java.lang.String" value="Ejemplo 2"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ejemplo_2ActionPerformed"/>
@@ -54,7 +45,7 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="ejemplo_3">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="AlgoAqui"/>
+                    <Property name="text" type="java.lang.String" value="Ejemplo 3"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ejemplo_3ActionPerformed"/>
@@ -155,6 +146,21 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="docCompActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="aboutMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Acerca de"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="aboutTeam">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Equipo"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aboutTeamActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

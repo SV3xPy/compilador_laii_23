@@ -151,7 +151,7 @@ public class analizadorSintactico {
                     }
                 } else {
                     if (Character.isLetter(datos[0].charAt(0))) {
-                        plErr.push(new errores(String.valueOf(i + 1), "Error sintáctico: Error uso de variable, mal definida", "104"));
+                        plErr.push(new errores(String.valueOf(i + 1), "Error sintáctico: Error de declaración de variable, no está bien definida.", "104"));
 
                     }
                 }

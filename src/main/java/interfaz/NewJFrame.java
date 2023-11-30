@@ -325,7 +325,6 @@ public class NewJFrame extends JFrame implements ActionListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenu2 = new javax.swing.JMenu();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTokens = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -364,8 +363,8 @@ public class NewJFrame extends JFrame implements ActionListener {
         docASin = new javax.swing.JMenuItem();
         docASem = new javax.swing.JMenuItem();
         docComp = new javax.swing.JMenuItem();
-
-        jMenu2.setText("jMenu2");
+        aboutMenu = new javax.swing.JMenu();
+        aboutTeam = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(238, 240, 235));
@@ -450,7 +449,7 @@ public class NewJFrame extends JFrame implements ActionListener {
 
         jMenu4.setText("Ejemplos");
 
-        ejemplo_1.setText("AlgoAqui");
+        ejemplo_1.setText("Ejemplo 1");
         ejemplo_1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ejemplo_1ActionPerformed(evt);
@@ -458,7 +457,7 @@ public class NewJFrame extends JFrame implements ActionListener {
         });
         jMenu4.add(ejemplo_1);
 
-        ejemplo_2.setText("AlgoAqui");
+        ejemplo_2.setText("Ejemplo 2");
         ejemplo_2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ejemplo_2ActionPerformed(evt);
@@ -466,7 +465,7 @@ public class NewJFrame extends JFrame implements ActionListener {
         });
         jMenu4.add(ejemplo_2);
 
-        ejemplo_3.setText("AlgoAqui");
+        ejemplo_3.setText("Ejemplo 3");
         ejemplo_3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ejemplo_3ActionPerformed(evt);
@@ -570,6 +569,18 @@ public class NewJFrame extends JFrame implements ActionListener {
         Ayuda.add(docComp);
 
         jMenuBar1.add(Ayuda);
+
+        aboutMenu.setText("Acerca de");
+
+        aboutTeam.setText("Equipo");
+        aboutTeam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutTeamActionPerformed(evt);
+            }
+        });
+        aboutMenu.add(aboutTeam);
+
+        jMenuBar1.add(aboutMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -728,7 +739,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     }//GEN-LAST:event_docASemActionPerformed
 
     private void docCompActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_docCompActionPerformed
-        File file = new File("src\\main\\java\\resources\\blank.txt");
+        File file = new File("src\\main\\java\\resources\\DocumentaciónProyectoFinal-LAII-Equipo2.pdf");
         try {
             Desktop.getDesktop().open(file);
         } catch (IOException e) {
@@ -798,6 +809,7 @@ public class NewJFrame extends JFrame implements ActionListener {
         modeloTabla.setRowCount(0);
         txtSalida.setText("");
         editorCodigo.setText("");
+        mostrarRuta.setText("");
         btn_Lex.setBackground(red);
         btn_Sin.setBackground(red);
         btn_Sem.setBackground(red);
@@ -821,6 +833,10 @@ public class NewJFrame extends JFrame implements ActionListener {
     private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
 
     }//GEN-LAST:event_btnCompilarActionPerformed
+
+    private void aboutTeamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutTeamActionPerformed
+        new acercaDeTeam(this, true).setVisible(true);
+    }//GEN-LAST:event_aboutTeamActionPerformed
 
     /**
      * @param args the command line arguments
@@ -863,6 +879,8 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JMenuItem Abrir;
     private javax.swing.JMenu Ayuda;
     private javax.swing.JMenuItem Guardar;
+    private javax.swing.JMenu aboutMenu;
+    private javax.swing.JMenuItem aboutTeam;
     private javax.swing.JButton btnCompilar;
     private javax.swing.JButton btn_Lex;
     private javax.swing.JButton btn_Sem;
@@ -885,7 +903,6 @@ public class NewJFrame extends JFrame implements ActionListener {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
