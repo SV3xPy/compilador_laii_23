@@ -1,8 +1,8 @@
 principal {
     int cont = 0 ;
-    int fin = 5 ;
-    aslong (fin > cont){
+    int final = 5 ;
+    aslong (final > cont) {
          cont = cont + 1 ;
-         show "Contador: "+cont ;
+         show "Contador = "+cont ;
     }
 }

@@ -739,7 +739,7 @@ public class NewJFrame extends JFrame implements ActionListener {
     }//GEN-LAST:event_docASemActionPerformed
 
     private void docCompActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_docCompActionPerformed
-        File file = new File("src\\main\\java\\resources\\DocumentaciónProyectoFinal-LAII-Equipo2.pdf");
+        File file = new File("src\\main\\java\\resources\\ProyectoFinalCompilador-Equipo2-LAII.pdf");
         try {
             Desktop.getDesktop().open(file);
         } catch (IOException e) {
